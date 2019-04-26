@@ -430,4 +430,18 @@ describe('tracer should', () => {
     assert.isNotOk(span.context().parentId);
     assert.isOk(span.context().isSampled());
   });
+
+  it('should NOT mutate tags', () => {
+    const tags = {
+      robot: 'bender',
+    };
+    tracer = new Tracer('test-service-name', reporter, new ConstSampler(true), {
+      tags: tags,
+    });
+    tracer.close();
+    assert.notEqual(tags, tracer._tags);
+    assert.deepEqual(tags, {
+      robot: 'bender',
+    });
+  });
 });
