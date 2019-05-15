@@ -92,7 +92,6 @@ describe('SpanContext should', () => {
 
     assert.deepEqual('100', context.traceIdStr);
     assert.deepEqual(Utils.encodeInt64(0x100), context.traceId);
-    assert.deepEqual('100', context.traceIdStr);
     assert.deepEqual(Utils.encodeInt64(0x7f), context.spanId);
     assert.equal(null, context.parentId);
     assert.equal(1, context.flags);
