@@ -68,13 +68,13 @@ export default class SpanContext {
 
   get traceId(): any {
     if (this._traceId == null && this._traceIdStr != null) {
+      // make sure that the HEX has an even number of digits, node is expecting 2 HEX character per byte
+      // https://github.com/nodejs/node/issues/21242
       const safeTraceIdStr = this._traceIdStr.length % 2 == 0 ? this._traceIdStr : '0' + this._traceIdStr;
-      this._traceId = new Buffer(safeTraceIdStr, 'hex');
-      const size = this._traceId.length > 8 ? 16 : 8;
-      const tmpBuffer = new Buffer(size);
-      tmpBuffer.fill(0);
-      this._traceId.copy(tmpBuffer, size - this.traceId.length);
-      this._traceId = tmpBuffer;
+      const tmpBuffer = Utils.newBufferFromHex(safeTraceIdStr);
+      const size = tmpBuffer.length > 8 ? 16 : 8;
+      this._traceId = Utils.newBuffer(size);
+      tmpBuffer.copy(this._traceId, size - tmpBuffer.length);
     }
     return this._traceId;
   }
